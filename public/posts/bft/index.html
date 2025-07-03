@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>BFT Sherlock Challenge | Breakline</title>
+<meta name="keywords" content="DFIR, HTB">
+<meta name="description" content="In this post we are going to solve BFT Sherlock challenge">
+<meta name="author" content="Axonym">
+<link rel="canonical" href="http://localhost:1313/posts/bft/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4fc85fe1514a6c10518f36a1bf9981bf2d40459136486cc7e95de6d8b7a047cb.css" integrity="sha256-T8hf4VFKbBBRjzahv5mBvy1ARZE2SGzH6V3m2LegR8s=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/bft/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Breakline (Alt + H)">Breakline</a>
+            <div class="logo-switches">
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      BFT Sherlock Challenge
+    </h1>
+    <div class="post-meta"><span title='2025-07-03 20:45:53 +0300 EEST'>July 3, 2025</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Axonym
+
+</div>
+  </header> 
+<figure class="entry-cover">
+            <img loading="eager" src="http://localhost:1313/posts/bft/bft.png" alt="Photo of BFT logo from HTB">
+        <figcaption>Credit: <a href="https://app.hackthebox.com/sherlocks/BFT">https://app.hackthebox.com/sherlocks/BFT</a></figcaption>
+</figure><div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#info" aria-label="Info">Info</a></li>
+                <li>
+                    <a href="#sherlock-scenario" aria-label="Sherlock Scenario">Sherlock Scenario</a></li>
+                <li>
+                    <a href="#files-given" aria-label="Files given">Files given</a></li>
+                <li>
+                    <a href="#beginning" aria-label="Beginning">Beginning</a><ul>
+                        
+                <li>
+                    <a href="#task-1" aria-label="Task 1">Task 1</a></li>
+                <li>
+                    <a href="#task-2" aria-label="Task 2">Task 2</a></li>
+                <li>
+                    <a href="#task-3" aria-label="Task 3">Task 3</a></li>
+                <li>
+                    <a href="#task-4" aria-label="Task 4">Task 4</a></li>
+                <li>
+                    <a href="#task-5" aria-label="Task 5">Task 5</a></li>
+                <li>
+                    <a href="#task-6" aria-label="Task 6">Task 6</a></li></ul>
+                </li>
+                <li>
+                    <a href="#further-analysis" aria-label="Further Analysis">Further Analysis</a><ul>
+                        
+                <li>
+                    <a href="#indicators-of-compromise-iocs" aria-label="Indicators of Compromise (IOCs)">Indicators of Compromise (IOCs)</a></li>
+                <li>
+                    <a href="#observations" aria-label="Observations">Observations</a></li></ul>
+                </li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="info">Info<a hidden class="anchor" aria-hidden="true" href="#info">#</a></h2>
+<ul>
+<li>
+<p>Status: Retired</p>
+</li>
+<li>
+<p>Difficulty: Very Easy</p>
+</li>
+<li>
+<p>Track: Intro to Blue Team (Easy)</p>
+</li>
+</ul>
+<h2 id="sherlock-scenario">Sherlock Scenario<a hidden class="anchor" aria-hidden="true" href="#sherlock-scenario">#</a></h2>
+<p>In this Sherlock, you will become acquainted with MFT (Master File Table) forensics. You will be introduced to well-known tools and methodologies for analyzing MFT
+artifacts to identify malicious activity. During our analysis, you will utilize the MFTECmd tool to parse the provided MFT file, TimeLine Explorer to open and analyze the results from the parsed MFT, and a Hex editor to recover file contents from the MFT.</p>
+<h2 id="files-given">Files given<a hidden class="anchor" aria-hidden="true" href="#files-given">#</a></h2>
+<p>We are given .zip file which has the following files and file structure:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#e6db74">`</span>-- C
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">`</span>-- $MFT
+</span></span></code></pre></div><p>.zip file&rsquo;s SHA1 hash is 433e78e7505d4158460ab627f4acf51d9f93cb3b</p>
+<p>and $MFT file&rsquo;s SHA1 hash is 4db07e9e52e3147e804f6318457a27e79a7c8b69</p>
+<h2 id="beginning">Beginning<a hidden class="anchor" aria-hidden="true" href="#beginning">#</a></h2>
+<p>To start analyzing $MFT file we need to create .csv file from it using <a href="https://github.com/EricZimmerman/MFTECmd">MFTECmd.exe</a></p>
+<p>with the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>mftecmd <span style="color:#f92672">-f</span> <span style="color:#e6db74">&#39;.\$MFT&#39;</span> --csv ../parsed --csvf mft.csv
+</span></span></code></pre></div><p>This time around the created csv file didn&rsquo;t have the correct timestamp format to load it to <a href="https://ericzimmerman.github.io/">Timeline Explorer</a> that makes the $MFT is easier to go through.</p>
+<p>I then had to use Python script to get the correct timestamp format and I could then load it to the Timeline Explorer to start analyzing the $MFT. (I had to convert dots between time to colons)</p>
+<h3 id="task-1">Task 1<a hidden class="anchor" aria-hidden="true" href="#task-1">#</a></h3>
+<p>Simon Stark was targeted by attackers on February 13. He downloaded a ZIP file from a link received in an email. What was the name of the ZIP file he downloaded from the link?</p>
+<p>Using the Timeline Explorer it is easy to look through the $MFT file. We can filter everything related to the date when Simon Stark was targeted by attackers.</p>
+<p>And since the file was zip file we can filter out by extension and we get the following results:</p>
+<p><img loading="lazy" src="/posts/bft/task1.png"></p>
+<p>From these results we can draw conclusion that he file that he downloaded was Stage-20240213T093324Z-001.zip but we can&rsquo;t still know for sure that where it was downloaded from.</p>
+<p>To make sure that it is downloaded from internet we can search using the search function for &ldquo;Stage-&rdquo;</p>
+<p>From the results we can look at the &ldquo;Zone.identifier&rdquo; result and it seems that it was downloaded from storage.googleapis.com and we can assume that the &ldquo;Stage-20240213T093324Z-001.zip&rdquo; is the downloaded zip file.</p>
+<p><strong>Answer:</strong> Stage-20240213T093324Z-001.zip</p>
+<h3 id="task-2">Task 2<a hidden class="anchor" aria-hidden="true" href="#task-2">#</a></h3>
+<p>Examine the Zone Identifier contents for the initially downloaded ZIP file. This field reveals the HostUrl from where the file was downloaded, serving as a valuable Indicator of Compromise (IOC) in our investigation/analysis. What is the full Host URL from where this ZIP file was downloaded?</p>
+<p>We almost went through where the zip file was downloaded from by looking at the Zone.identifier file and at Zone Id Contents cell. It had the following information</p>
+<pre tabindex="0"><code>[ZoneTransfer]
+ZoneId=3
+HostUrl=https://storage.googleapis.com/drive-bulk-export-anonymous/20240213T093324.039Z/4133399871716478688/a40aecd0-1cf3-4f88-b55a-e188d5c1c04f/1/c277a8b4-afa9-4d34-b8ca-e1eb5e5f983c?authuser
+</code></pre><p>From this result we can get full Host URL.</p>
+<p><strong>Answer:</strong> <code>https://storage.googleapis.com/drive-bulk-export-anonymous/20240213T093324.039Z/4133399871716478688/a40aecd0-1cf3-4f88-b55a-e188d5c1c04f/1/c277a8b4-afa9-4d34-b8ca-e1eb5e5f983c?authuser</code></p>
+<h3 id="task-3">Task 3<a hidden class="anchor" aria-hidden="true" href="#task-3">#</a></h3>
+<p>What is the full path and name of the malicious file that executed malicious code and connected to a C2 server?</p>
+<p>From the same search results we can obtain information that there was malicious file when the user extracted the zip file named <code>invoice.bat</code> and we can easily draw conclusion that file executed malicious code and connected to a C2 server.</p>
+<p>And the full path for it is C:\Users\simon.stark\Downloads\Stage-20240213T093324Z-001\Stage\invoice\invoices\invoice.bat</p>
+<p><strong>Answer:</strong> C:\Users\simon.stark\Downloads\Stage-20240213T093324Z-001\Stage\invoice\invoices\invoice.bat</p>
+<h3 id="task-4">Task 4<a hidden class="anchor" aria-hidden="true" href="#task-4">#</a></h3>
+<p>Analyze the $Created0x30 timestamp for the previously identified file. When was this file created on disk?</p>
+<p>To look at the timestamp for the invoice.bat we need to look at Created0x30 column.</p>
+<p><img loading="lazy" src="/posts/bft/task4.png"></p>
+<p>The timestamp when the invoice.bat was created is <code>2024-02-13 16:38:39</code></p>
+<p><strong>Answer:</strong> <code>2024-02-13 16:38:39</code></p>
+<h3 id="task-5">Task 5<a hidden class="anchor" aria-hidden="true" href="#task-5">#</a></h3>
+<p>Finding the hex offset of an MFT record is beneficial in many investigative scenarios. Find the hex offset of the stager file from Question 3.</p>
+<p>To find the hex offset of the stager file we need to find the entry number for the bat file and multiply it by 1024 because this is the size of each record and the entry number for the file is 23436. We get 23 998 464 to be the decimal value we now need to convert it to hex get the hex offset.</p>
+<p>To convert it to hexadecimal we can use the calculator in Windows and the hexadecimal value is then 16E3000.</p>
+<p><strong>Answer:</strong> 16E3000</p>
+<h3 id="task-6">Task 6<a hidden class="anchor" aria-hidden="true" href="#task-6">#</a></h3>
+<p>Each MFT record is 1024 bytes in size. If a file on disk has smaller size than 1024 bytes, they can be stored directly on MFT File itself. These are called MFT Resident files. During Windows File system Investigation, its crucial to look for any malicious/suspicious files that may be resident in MFT. This way we can find contents of malicious files/scripts. Find the contents of The malicious stager identified in Question3 and answer with the C2 IP and port.</p>
+<p>    </p>
+<p>Since we now have the hex offset we need to use the HxD editor and open $MFT with it. To go to the offset and from there we can find contents of malicious files/scripts.</p>
+<p>We can use CTRL+G to go to certain hex offset.</p>
+<p><img loading="lazy" src="/posts/bft/task6.png"></p>
+<p>After the invoice.bat we can see residence of malicious powershell code and from there we can obtain the C2 IP and port which is 43.204.110.203:6666</p>
+<p><strong>Answer:</strong> 43.204.110.203:6666</p>
+<h2 id="further-analysis">Further Analysis<a hidden class="anchor" aria-hidden="true" href="#further-analysis">#</a></h2>
+<h3 id="indicators-of-compromise-iocs">Indicators of Compromise (IOCs)<a hidden class="anchor" aria-hidden="true" href="#indicators-of-compromise-iocs">#</a></h3>
+<ul>
+<li>
+<p><strong>Malicious file:</strong> <code>invoice.bat</code></p>
+</li>
+<li>
+<p><strong>Downloaded ZIP:</strong> <code>Stage-20240213T093324Z-001.zip</code></p>
+</li>
+<li>
+<p><strong>C2 IP/Port:</strong> <code>43.204.110.203:6666</code></p>
+</li>
+</ul>
+<h3 id="observations">Observations<a hidden class="anchor" aria-hidden="true" href="#observations">#</a></h3>
+<ul>
+<li>The actor was kinda smart to provide the malicious file using Google Cloud/storage since that most likely won&rsquo;t be detected by email filters</li>
+</ul>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>This challenge helped to demonstrate how much we can retrieve from just one $MFT file. Also use of MFTECmd and Timeline Explorer tools showed how to get a lot of information from the MFT file.</p>
+<p>Overall this Sherlock challenge being rated as &ldquo;Easy&rdquo; definitely showed up. The challenge was short but I still hoped this one could have been a tad bit longer to show some of the features of Timeline Explorer. But I felt that it was brilliant to show that not everything can be found from the csv file MFTECmd created. That sometimes we need to use hex editors to our advantage to see what code/scripts the malicious actors have ran.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/dfir/">DFIR</a></li>
+      <li><a href="http://localhost:1313/tags/htb/">HTB</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Breakline</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

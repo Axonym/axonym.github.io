@@ -1,8 +1,32 @@
-baseURL: https://example.org/
+baseURL: https://axonym.github.io
 languageCode: en-us
-title: My New Hugo Site
+title: Breakline
 theme: ["PaperMod"]
+
+menu:
+  main:
+    - identifier: posts
+      name: Posts
+      url: /posts/
+      weight: 10
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 20
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 30
 
 caches:
   images:
     dir: :cacheDir/images
+
+taxonomies:
+  tag: tags
+
+params:
+  ShowCodeCopyButtons: true
+  disableThemeToggle: true
+  ShowReadingTime: true
+  ShowToC: true
