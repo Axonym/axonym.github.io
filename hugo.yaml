@@ -30,3 +30,23 @@ params:
   disableThemeToggle: true
   ShowReadingTime: true
   ShowToC: true
+
+  profileMode:
+    enabled: false
+
+  homeInfoParams:
+    Title: "Hi!"
+    Content: |
+      Welcome to Breakline.  
+      Here I will post HTB Sherlock challenge writeups.  
+         
+      You can find more info about me from **[About](/about)**.
+         
+         
+      -- Axonym
+
+  socialIcons:
+    - name: hackthebox
+      url: "https://app.hackthebox.com/profile/2339218"
+    - name: github
+      url: "https://github.com/axonym"
