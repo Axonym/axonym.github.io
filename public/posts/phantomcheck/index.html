@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Operation Blackout 2025: Phantom Check | Breakline</title>
+<meta name="keywords" content="DFIR, HTB">
+<meta name="description" content="In this post we are looking at Windows event logs">
+<meta name="author" content="Axonym">
+<link rel="canonical" href="http://localhost:1313/posts/phantomcheck/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4fc85fe1514a6c10518f36a1bf9981bf2d40459136486cc7e95de6d8b7a047cb.css" integrity="sha256-T8hf4VFKbBBRjzahv5mBvy1ARZE2SGzH6V3m2LegR8s=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/phantomcheck/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Breakline (Alt + H)">Breakline</a>
+            <div class="logo-switches">
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Operation Blackout 2025: Phantom Check
+    </h1>
+    <div class="post-meta"><span title='2025-07-13 12:30:30 +0300 EEST'>July 13, 2025</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Axonym
+
+</div>
+  </header> 
+<figure class="entry-cover">
+            <img loading="eager" src="http://localhost:1313/posts/phantomcheck/phantomcheck.png" alt="Photo of Phantom Check logo from HTB">
+        <figcaption>Credit: <a href="https://app.hackthebox.com/sherlocks/Operation%20Blackout%202025:%20Phantom%20Check">HTB</a></figcaption>
+</figure><div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#info" aria-label="Info">Info</a></li>
+                <li>
+                    <a href="#sherlock-scenario" aria-label="Sherlock Scenario">Sherlock Scenario</a></li>
+                <li>
+                    <a href="#files-given" aria-label="Files given">Files given</a></li>
+                <li>
+                    <a href="#beginning" aria-label="Beginning">Beginning</a></li>
+                <li>
+                    <a href="#tasks" aria-label="Tasks">Tasks</a><ul>
+                        
+                <li>
+                    <a href="#task-1" aria-label="Task 1">Task 1</a></li>
+                <li>
+                    <a href="#task-2" aria-label="Task 2">Task 2</a></li>
+                <li>
+                    <a href="#task-3" aria-label="Task 3">Task 3</a></li>
+                <li>
+                    <a href="#task-4" aria-label="Task 4">Task 4</a></li>
+                <li>
+                    <a href="#task-5" aria-label="Task 5">Task 5</a></li>
+                <li>
+                    <a href="#task-6" aria-label="Task 6">Task 6</a></li></ul>
+                </li>
+                <li>
+                    <a href="#further-analysis" aria-label="Further analysis">Further analysis</a><ul>
+                        
+                <li>
+                    <a href="#indicators-of-attack-ioas" aria-label="Indicators of attack (IOAs)">Indicators of attack (IOAs)</a></li>
+                <li>
+                    <a href="#observations" aria-label="Observations">Observations</a></li></ul>
+                </li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="info">Info<a hidden class="anchor" aria-hidden="true" href="#info">#</a></h2>
+<ul>
+<li>
+<p>Status: Retired</p>
+</li>
+<li>
+<p>Difficulty: Very Easy</p>
+</li>
+</ul>
+<h2 id="sherlock-scenario">Sherlock Scenario<a hidden class="anchor" aria-hidden="true" href="#sherlock-scenario">#</a></h2>
+<p>Talion suspects that the threat actor carried out anti-virtualization checks to avoid detection in sandboxed environments. Your task is to analyze the event logs and identify the specific techniques used for virtualization detection. Byte Doctor requires evidence of the registry checks or processes the attacker executed to perform these checks.</p>
+<h2 id="files-given">Files given<a hidden class="anchor" aria-hidden="true" href="#files-given">#</a></h2>
+<p>We are given a <code>.zip</code> file which contains the following structure:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>|-- Microsoft-Windows-Powershell.evtx
+</span></span><span style="display:flex;"><span>|-- Windows-Powershell-Operational.evtx
+</span></span></code></pre></div><h2 id="beginning">Beginning<a hidden class="anchor" aria-hidden="true" href="#beginning">#</a></h2>
+<p>In the zip file we have two evtx event logs:</p>
+<p>Microsoft-Windows-Powershell.evtx and Windows-Powershell-Operational.evtx</p>
+<p>These are the files we have to do analysis on.</p>
+<p>This time I used <a href="https://github.com/EricZimmerman/KapeFiles?tab=readme-ov-file">KAPE</a> (kinda overkill I know) to analyze the files even though I could have just used <a href="https://github.com/EricZimmerman/evtx">EvtxECmd</a>.</p>
+<h2 id="tasks">Tasks<a hidden class="anchor" aria-hidden="true" href="#tasks">#</a></h2>
+<h3 id="task-1">Task 1<a hidden class="anchor" aria-hidden="true" href="#task-1">#</a></h3>
+<p>Which WMI class did the attacker use to retrieve model and manufacturer information for virtualization detection?</p>
+<p>To retrieve what WMI class the attacker used we need to analyze the given evtx files.</p>
+<p>I used KAPE with the following command</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>.\KAPE.exe --msource <span style="color:#e6db74">&#34;PhantomCheck&#34;</span> --mdest <span style="color:#e6db74">&#34;Parsed&#34;</span> --module EvtxECmd
+</span></span></code></pre></div><p>This then gave me csv file which combined both of the evtx files. I then searched through it for &ldquo;WMI and found this class <strong>&ldquo;Win32_ComputerSystem&rdquo;</strong> which gives information about computer and in return can give information about used virtualization platforms.</p>
+<p><strong>Answer:</strong> Win32_ComputerSystem</p>
+<h3 id="task-2">Task 2<a hidden class="anchor" aria-hidden="true" href="#task-2">#</a></h3>
+<p>Which WMI query did the attacker execute to retrieve the current temperature value of the machine?</p>
+<p>Searching through the CSV file for temperature I found this line:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;EventData&#34;</span><span style="color:#960050;background-color:#1e0010">:</span>{<span style="color:#e6db74">&#34;Data&#34;</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#e6db74">&#34;Get-WmiObject -Query \&#34;</span>SELECT * FROM MSAcpi_ThermalZoneTemperature\<span style="color:#e6db74">&#34; -ErrorAction SilentlyContinue, \tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=53\n\n\tUserId=DESKTOP-M3AKJSD\\User\n\tHostName=ConsoleHost\n\tHostVersion=5.1.26100.2161\n\tHostId=0fad0cf8-6cb6-4657-86f7-655ec22eed9f\n\tHostApplication=C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe\n\tEngineVersion=5.1.26100.2161\n\tRunspaceId=2aeeba59-d0f6-4ce7-b41c-e07625b3beec\n\tPipelineId=21\n\tScriptName=\n\tCommandLine=Get-WmiObject -Query \&#34;</span>SELECT * FROM MSAcpi_ThermalZoneTemperature\<span style="color:#e6db74">&#34; -ErrorAction SilentlyContinue, CommandInvocation(Get-WmiObject): \&#34;</span>Get-WmiObject\<span style="color:#e6db74">&#34;\nParameterBinding(Get-WmiObject): name=\&#34;</span>Query\<span style="color:#e6db74">&#34;; value=\&#34;</span>SELECT * FROM MSAcpi_ThermalZoneTemperature\<span style="color:#e6db74">&#34;\nParameterBinding(Get-WmiObject): name=\&#34;</span>ErrorAction\<span style="color:#e6db74">&#34;; value=\&#34;</span>SilentlyContinue\<span style="color:#e6db74">&#34;\nNonTerminatingError(Get-WmiObject): \&#34;</span>Invalid class \<span style="color:#e6db74">&#34;MSAcpi_ThermalZoneTemperature\&#34;</span>\<span style="color:#e6db74">&#34;\n&#34;</span>,<span style="color:#e6db74">&#34;Binary&#34;</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#e6db74">&#34;&#34;</span>}}
+</span></span></code></pre></div><p>And the attacker used this <strong>&ldquo;SELECT * FROM MSAcpi_ThermalZoneTemperature&rdquo;</strong> WMI querty to get the current temperature value.</p>
+<p><strong>Answer:</strong> SELECT * FROM MSAcpi_ThermalZoneTemperature</p>
+<h3 id="task-3">Task 3<a hidden class="anchor" aria-hidden="true" href="#task-3">#</a></h3>
+<p>The attacker loaded a PowerShell script to detect virtualization. What is the function name of the script?</p>
+<p>Searching through the CSV file for &ldquo;function&rdquo; I was able to find the following information.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>ScriptBlockText<span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#66d9ef">function</span> Check-VM, {, <span style="color:#75715e">&lt;# , .SYNOPSIS , Nishang script which detects whether it is in a known virtual machine.,  , .DESCRIPTION , This script uses known parameters or &#39;fingerprints&#39; of Hyper-V, VMWare, Virtual PC, Virtual Box,, Xen and QEMU for detecting the environment., .EXAMPLE , PS &gt; Check-VM,  , .LINK , http://www.labofapenetrationtester.com/2013/01/quick-post-check-if-your-payload-is.html, https://github.com/samratashok/nishang, .NOTES , The script draws heavily from checkvm.rb post module from msf., https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/checkvm.rb, #&gt;</span> ,     [CmdletBinding()] <span style="color:#66d9ef">Param</span>(),     $ErrorActionPreference = <span style="color:#e6db74">&#34;SilentlyContinue&#34;</span>,     <span style="color:#75715e">#Hyper-V,     $hyperv = Get-ChildItem HKLM:\SOFTWARE\Microsoft,     if (($hyperv -match &#34;Hyper-V&#34;) -or ($hyperv -match &#34;VirtualMachine&#34;)),         {,             $hypervm = $true,         },     if (!$hypervm),         {,             $hyperv = Get-ItemProperty hklm:\HARDWARE\DESCRIPTION\System -Name SystemBiosVersion,             if ($hyperv -match &#34;vrtual&#34;),                 {,                     $hypervm = $true,                 },         },     ,     if (!$hypervm),         {,             $hyperv = Get-ChildItem HKLM:\HARDWARE\ACPI\FADT,             if ($hyperv -match &#34;vrtual&#34;),                 {,                     $hypervm = $true,                 },         },             ,     if (!$hypervm),         {,             $hyperv = Get-ChildItem HKLM:\HARDWARE\ACPI\RSDT,             if ($hyperv -match &#34;vrtual&#34;),                 {,                     $hypervm = $true,                 },         },     if (!$hypervm),         {,             $hyperv = Get-ChildItem HKLM:\SYSTEM\ControlSet001\Services,             if (($hyperv -match &#34;vmicheartbeat&#34;) -or ($hyperv -match &#34;vmicvss&#34;) -or ($hyperv -match &#34;vmicshutdown&#34;) -or ($hyperv -match &#34;vmiexchange&#34;)),                 {,                     $hypervm = $true,                 },         },    ,     if ($hypervm),         {,     ,              &#34;This is a Hyper-V machine.&#34;,     ,         },     #VMWARE,     $vmware = Get-ChildItem HKLM:\SYSTEM\ControlSet001\Services,     if (($vmware -match &#34;vmdebug&#34;) -or ($vmware -match &#34;vmmouse&#34;) -or ($vmware -match &#34;VMTools&#34;) -or ($vmware -match &#34;VMMEMCTL&#34;)),         {,             $vmwarevm = $true,         },     if (!$vmwarevm),         {,             $vmware = Get-ItemProperty hklm:\HARDWARE\DESCRIPTION\System\BIOS -Name SystemManufacturer,             if ($vmware -match &#34;vmware&#34;),                 {,                     $vmwarevm = $true,                 },         },     ,     if (!$vmwarevm),         {,             $vmware = Get-Childitem hklm:\hardware\devicemap\scsi -recurse | gp -Name identifier,             if ($vmware -match &#34;vmware&#34;),                 {,                     $vmwarevm = $true,                 },         },     if (!$vmwarevm),         {,             $vmware = Get-Process,             if (($vmware -eq &#34;vmwareuser.exe&#34;) -or ($vmware -match &#34;vmwaretray.exe&#34;)),                 {,                     $vmwarevm = $true,                 },         },     if ($vmwarevm),         {,     ,              &#34;This is a VMWare machine.&#34;,     ,         },     ,     #Virtual PC,     $vpc = Get-Process,     if (($vpc -eq &#34;vmusrvc.exe&#34;) -or ($vpc -match &#34;vmsrvc.exe&#34;)),         {,         $vpcvm = $true,         },     if (!$vpcvm),         {,             $vpc = Get-Process,             if (($vpc -eq &#34;vmwareuser.exe&#34;) -or ($vpc -match &#34;vmwaretray.exe&#34;)),                 {,                     $vpcvm = $true,                 },         },     if (!$vpcvm),         {,             $vpc = Get-ChildItem HKLM:\SYSTEM\ControlSet001\Services,             if (($vpc -match &#34;vpc-s3&#34;) -or ($vpc -match &#34;vpcuhub&#34;) -or ($vpc -match &#34;msvmmouf&#34;)),                 {,                     $vpcvm = $true,                 },         },     if ($vpcvm),         {,     ,          &#34;This is a Virtual PC.&#34;,     ,         },     #Virtual Box,     $vb = Get-Process,     if (($vb -eq &#34;vboxservice.exe&#34;) -or ($vb -match &#34;vboxtray.exe&#34;)),         {,     ,         $vbvm = $true,     ,         },     if (!$vbvm),         {,             $vb = Get-ChildItem HKLM:\HARDWARE\ACPI\FADT,             if ($vb -match &#34;vbox_&#34;),                 {,                     $vbvm = $true,                 },         },     if (!$vbvm),         {,             $vb = Get-ChildItem HKLM:\HARDWARE\ACPI\RSDT,             if ($vb -match &#34;vbox_&#34;),                 {,                     $vbvm = $true,                 },         },     ,     if (!$vbvm),         {,             $vb = Get-Childitem hklm:\hardware\devicemap\scsi -recurse | gp -Name identifier,             if ($vb -match &#34;vbox&#34;),                 {,                     $vbvm = $true,                 },         },     if (!$vbvm),         {,             $vb = Get-ItemProperty hklm:\HARDWARE\DESCRIPTION\System -Name SystemBiosVersion,             if ($vb -match &#34;vbox&#34;),                 {,                      $vbvm = $true,                 },         },   ,     if (!$vbvm),         {,             $vb = Get-ChildItem HKLM:\SYSTEM\ControlSet001\Services,             if (($vb -match &#34;VBoxMouse&#34;) -or ($vb -match &#34;VBoxGuest&#34;) -or ($vb -match &#34;VBoxService&#34;) -or ($vb -match &#34;VBoxSF&#34;)),                 {,                     $vbvm = $true,                 },         },     if ($vbvm),         {,     ,          &#34;This is a Virtual Box.&#34;,     ,         },     #Xen,     $xen = Get-Process,     if ($xen -eq &#34;xenservice.exe&#34;),         {,     ,         $xenvm = $true,     ,         },     ,     if (!$xenvm),         {,             $xen = Get-ChildItem HKLM:\HARDWARE\ACPI\FADT,             if ($xen -match &#34;xen&#34;),                 {,                     $xenvm = $true,                 },         },     if (!$xenvm),         {,             $xen = Get-ChildItem HKLM:\HARDWARE\ACPI\DSDT,             if ($xen -match &#34;xen&#34;),                 {,                     $xenvm = $true,                 },         },     ,     if (!$xenvm),         {,             $xen = Get-ChildItem HKLM:\HARDWARE\ACPI\RSDT,             if ($xen -match &#34;xen&#34;),                 {,                     $xenvm = $true,                 },         },     ,     if (!$xenvm),         {,            $xen = Get-ChildItem HKLM:\SYSTEM\ControlSet001\Services,             if (($xen -match &#34;xenevtchn&#34;) -or ($xen -match &#34;xennet&#34;) -or ($xen -match &#34;xennet6&#34;) -or ($xen -match &#34;xensvc&#34;) -or ($xen -match &#34;xenvdb&#34;)),                 {,                     $xenvm = $true,                 },         },     if ($xenvm),         {,     ,          &#34;This is a Xen Machine.&#34;,     ,         },     #QEMU,     $qemu = Get-Childitem hklm:\hardware\devicemap\scsi -recurse | gp -Name identifier,     if ($qemu -match &#34;qemu&#34;),         {,     ,             $qemuvm = $true,     ,         },     ,     if (!$qemuvm),         {,         $qemu = Get-ItemProperty hklm:HARDWARE\DESCRIPTION\System\CentralProcessor\0 -Name ProcessorNameString,         if ($qemu -match &#34;qemu&#34;),             {,                 $qemuvm = $true,             },         }    ,     if ($qemuvm),         {,     ,          &#34;This is a Qemu machine.&#34;,     ,         }, }</span>
+</span></span></code></pre></div><p>The function&rsquo;s name was obtained and is <strong>&ldquo;Check-VM&rdquo;</strong></p>
+<p><strong>Answer:</strong> Check-VM</p>
+<h3 id="task-4">Task 4<a hidden class="anchor" aria-hidden="true" href="#task-4">#</a></h3>
+<p>Which registry key did the above script query to retrieve service details for virtualization detection?</p>
+<p>I was able to find the registry key from the above script by looking at the script for &ldquo;service&rdquo;</p>
+<p>The query used <strong>&ldquo;HKLM:\SYSTEM\ControlSet001\Services&rdquo;</strong> registry key to retrieve service details for virtualization detection.</p>
+<p><strong>Answer:</strong> HKLM:\SYSTEM\ControlSet001\Services</p>
+<h3 id="task-5">Task 5<a hidden class="anchor" aria-hidden="true" href="#task-5">#</a></h3>
+<p>The VM detection script can also identify VirtualBox. Which processes is it comparing to determine if the system is running VirtualBox?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grep -i <span style="color:#e6db74">&#34;.exe&#34;</span> EvtxECmd_Output.csv | grep -v powershell.exe | grep -i <span style="color:#e6db74">&#34;.exe&#34;</span>
+</span></span></code></pre></div><p>Using this I was able to find the <strong>&ldquo;vboxservice.exe, vboxtray.exe&rdquo;</strong> which are used to compare if system is running VirtualBox.</p>
+<p><strong>Answer:</strong> vboxservice.exe, vboxtray.exe</p>
+<h3 id="task-6">Task 6<a hidden class="anchor" aria-hidden="true" href="#task-6">#</a></h3>
+<p>The VM detection script prints any detection with the prefix &lsquo;This is a&rsquo;. Which two virtualization platforms did the script detect?</p>
+<p>I searched from the CSV file for &ldquo;This is a&rdquo; and I was able to find the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;EventData&#34;</span><span style="color:#960050;background-color:#1e0010">:</span>{<span style="color:#e6db74">&#34;Data&#34;</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#e6db74">&#34;\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=145\n\n\tUserId=DESKTOP-M3AKJSD\\User\n\tHostName=ConsoleHost\n\tHostVersion=5.1.26100.2161\n\tHostId=0fad0cf8-6cb6-4657-86f7-655ec22eed9f\n\tHostApplication=C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe\n\tEngineVersion=5.1.26100.2161\n\tRunspaceId=2aeeba59-d0f6-4ce7-b41c-e07625b3beec\n\tPipelineId=43\n\tScriptName=\n\tCommandLine=, CommandInvocation(Out-Default): \&#34;</span>Out-Default\<span style="color:#e6db74">&#34;\nParameterBinding(Out-Default): name=\&#34;</span>InputObject\<span style="color:#e6db74">&#34;; value=\&#34;</span>This is a Hyper-V machine.\<span style="color:#e6db74">&#34;\nParameterBinding(Out-Default): name=\&#34;</span>InputObject\<span style="color:#e6db74">&#34;; value=\&#34;</span>This is a VMWare machine.\<span style="color:#e6db74">&#34;\n&#34;</span>,<span style="color:#e6db74">&#34;Binary&#34;</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#e6db74">&#34;&#34;</span>}}
+</span></span></code></pre></div><p>And especially this value was important: &ldquo;<strong>This is a Hyper-V machine.&quot;\nParameterBinding(Out-Default): name=&quot;InputObject&quot;; value=&quot;This is a VMWare machine.</strong>&rdquo; Indicating that the script detected &ldquo;<strong>Hyper-V</strong>&rdquo; and &ldquo;<strong>VMWare</strong>&rdquo; virtualization platforms.</p>
+<p><strong>Answer:</strong> Hyper-V, Vmware</p>
+<h2 id="further-analysis">Further analysis<a hidden class="anchor" aria-hidden="true" href="#further-analysis">#</a></h2>
+<h3 id="indicators-of-attack-ioas">Indicators of attack (IOAs)<a hidden class="anchor" aria-hidden="true" href="#indicators-of-attack-ioas">#</a></h3>
+<ul>
+<li>
+<p>PowerShell command: <code>Get-WmiObject -Query &quot;SELECT * FROM Win32_ComputerSystem&quot;</code></p>
+</li>
+<li>
+<p>PowerShell command: <code>Get-WmiObject -Query &quot;SELECT * FROM MSAcpi_ThermalZoneTemperature&quot;</code></p>
+</li>
+<li>
+<p>Use of <a href="https://github.com/samratashok/nishang/blob/master/Gather/Check-VM.ps1">Nishang</a> PowerShell script</p>
+</li>
+</ul>
+<h3 id="observations">Observations<a hidden class="anchor" aria-hidden="true" href="#observations">#</a></h3>
+<p>Attacker is performing environment awareness by trying to detect virtualization platforms and this could mean that the attacker hasn&rsquo;t ready ran any malware (if the malware doesn&rsquo;t contain the script in it)</p>
+<p>So potentially this could be an useful rule or detection point when to flag certain IP, user etc. if they are running this kind of script.</p>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>This challenge demonstrates what attackers could use to detect virtualization platforms and which kind of script they might use. The challenge also demonstrates what to look for in event logs.</p>
+<p>Even though this Phantom Check Sherlock challenge demonstrates what to look for in event logs for certain script&rsquo;s commands, it accomplishes to what to look for when trying to detect attacker&rsquo;s IOAs.</p>
+<p><a href="https://labs.hackthebox.com/achievement/sherlock/2339218/935">https://labs.hackthebox.com/achievement/sherlock/2339218/935</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/dfir/">DFIR</a></li>
+      <li><a href="http://localhost:1313/tags/htb/">HTB</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Breakline</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Breakline</description>
     <generator>Hugo -- 0.147.9</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 03 Jul 2025 20:45:53 +0300</lastBuildDate>
+    <lastBuildDate>Sun, 13 Jul 2025 12:30:30 +0300</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Operation Blackout 2025: Phantom Check</title>
+      <link>http://localhost:1313/posts/phantomcheck/</link>
+      <pubDate>Sun, 13 Jul 2025 12:30:30 +0300</pubDate>
+      <guid>http://localhost:1313/posts/phantomcheck/</guid>
+      <description>In this post we are looking at Windows event logs</description>
+    </item>
     <item>
       <title>BFT Sherlock Challenge</title>
       <link>http://localhost:1313/posts/bft/</link>
