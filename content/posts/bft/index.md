@@ -4,7 +4,7 @@ draft: false
 title: 'BFT Sherlock Challenge'
 summary: 'In this post we are going to solve BFT Sherlock challenge'
 params:
-  author: Axonym
+  author: Juho Kylmä
 tags:
 - DFIR
 - HTB

@@ -4,7 +4,7 @@ draft: false
 title: 'Subatomic Sherlock Challenge'
 summary: 'In this post we are going to do malware analysis on token grabber'
 params:
-  author: Axonym
+  author: Juho Kylmä
 tags:
 - HTB
 - malware

@@ -4,7 +4,7 @@ draft: false
 title: 'Operation Blackout 2025: Phantom Check'
 summary: 'In this post we are looking at Windows event logs'
 params:
-  author: Axonym
+  author: Juho Kylmä
 tags:
 - DFIR
 - HTB
